@@ -18,7 +18,7 @@
 import urllib2
 
 # settings
-max_level = 15
+max_level = 5
 address_base = 'https://genealogy.math.ndsu.nodak.edu/id.php?id=' # Matthew Juniper
 
 # parent
@@ -72,10 +72,4 @@ def set_advisors(parent, level):
 
     for m in parent.advisors:
         set_advisors(mathematicians[m], level+1)
-
-student_node = Node(student_ident, student_name)
-mathematicians[student_ident] = student_node
-set_advisors(student_node, 0)
-for m in mathematicians:
-    print mathematicians[m]
 
