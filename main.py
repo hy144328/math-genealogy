@@ -31,8 +31,8 @@ student_node = Node(student_ident, student_name)
 g = Stammbaum(max_level)
 g.set_advisors(student_node, 1)
 g.cut_tree(student_node, 1)
-g.cut_tree(student_node, 1) # Run for a second time.
+g.cut_tree(student_node, 1) # Run for a second time (see stammbaum).
 
-# Source code for visualization.
+# Source code for dot.
 g.print_dot([student_node])
 
