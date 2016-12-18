@@ -26,3 +26,8 @@ readme: README.pdf
 README.pdf: README.md
 	$(PANDOC) -o README.pdf README.md
 
+.PHONY: clean
+clean:
+	-rm README.pdf
+	-rm *.pyc
+
