@@ -1,6 +1,7 @@
-*.pyc
-*.gv
 *.eps
+*.gv
+*.log
+*.pyc
 
 README.pdf
 

@@ -22,6 +22,10 @@ default:
 	$(PYTHON) main.py
 	$(DOT) -Teps stammbaum.gv > stammbaum.eps
 
+.PHONY: test
+test:
+	$(PYTHON) main.py | tee stammbaum.log 2>&1
+
 .PHONY: readme
 readme: README.pdf
 README.pdf: README.md
