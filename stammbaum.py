@@ -56,15 +56,18 @@ class Stammbaum:
         idx1 = the_page.find('Advisor')
         
         while idx1 != -1:
-            # ID
-            idx1 = the_page.find('id=', idx1) + 3
-            idx2 = the_page.find('"', idx1)
-            try:
-                ident = int(the_page[idx1:idx2])
-            except ValueError:
+            # Test for 'Advisor: Unknown'.
+            idx1 = the_page.find(':', idx1) + 2
+            idx2 = idx1 + 7
+            if the_page[idx1:idx2] == 'Unknown':
                 print "{:d}, {:s}".format(level+1, "Advisor unknown")
                 idx1 = the_page.find('Advisor', idx1)
                 continue
+
+            # ID
+            idx1 = the_page.find('id=', idx1) + 3
+            idx2 = the_page.find('"', idx1)
+            ident = int(the_page[idx1:idx2])
             
             # name
             idx1 = idx2 + 2
