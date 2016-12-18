@@ -78,6 +78,22 @@ class Stammbaum:
             # Next advisor.
             idx1 = the_page.find('Advisor', idx1)
 
+    # Enforce maximum level.
+    def cut_tree(self, parent, level=0):
+        # Recursion.
+        for child_id in parent.advisors:
+            try:
+                child = self.mathematicians[child_id]
+                self.cut_tree(child, level+1)
+            except(KeyError):
+                pass
+
+        if level > self.max_level:
+            del self.mathematicians[parent.ident]
+
+        if level == self.max_level:
+            parent.advisors = []
+
     # Print dot input.
     def print_dot(self, root_nodes, output_file="stammbaum.gv"):
         # First version.
