@@ -27,7 +27,7 @@ student_name = 'Matthew P. Juniper'
 g = Stammbaum(max_level)
 
 student_node = Node(student_ident, student_name)
-g.set_advisors(student_node, 0)
+g.set_advisors(student_node, 1)
 #for m in mathematicians:
 #    print mathematicians[m]
 
