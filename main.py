@@ -20,7 +20,7 @@
 from stammbaum import *
 
 # settings
-max_level = 5
+max_level = 8
 
 # parent
 student_ident = 149678

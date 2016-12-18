@@ -40,7 +40,7 @@ class Stammbaum:
     def set_advisors(self, parent, level=0):
         # Add parent.
         self.mathematicians[parent.ident] = parent
-        print "{:d}, {:s}".format(level, parent.name)
+        print "{:d}, {:s} ({:d})".format(level, parent.name, parent.ident)
 
         # Exit recursion.
         if level == self.max_level:
