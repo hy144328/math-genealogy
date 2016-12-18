@@ -20,6 +20,7 @@ PANDOC = pandoc
 .PHONY: default
 default:
 	$(PYTHON) main.py
+	$(DOT) -Teps stammbaum.gv > stammbaum.eps
 
 .PHONY: readme
 readme: README.pdf

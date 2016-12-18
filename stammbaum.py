@@ -17,6 +17,7 @@
 
 #!/usr/bin/env python
 
+import os
 import urllib2
 
 address_base = 'https://genealogy.math.ndsu.nodak.edu/id.php?id='
@@ -94,6 +95,7 @@ class Stammbaum:
 
         # Second version.
         self.print_dot_uniq(output_file)
+        os.remove(output_file_temp)
 
     # Recursive function.
     def print_dot_branch(self, parent_node, f):
@@ -102,10 +104,15 @@ class Stammbaum:
             f.write("\"{:s}\" -> \"{:s}\";\n".format(parent_node.name, child_node.name))
             self.print_dot_branch(child_node, f)
             
+    # Remove duplicate lines.
     def print_dot_uniq(self, output_file):
-        pass
+        f = open(output_file, 'w')
+        lines_seen = set()
 
+        for line in open(output_file+".temp", 'r'):
+            if line not in lines_seen:
+                f.write(line)
+                lines_seen.add(line)
 
-
-
+        f.close()
 
