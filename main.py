@@ -26,10 +26,13 @@ max_level = 10
 student_ident = 149678
 student_name = 'Matthew P. Juniper'
 
+# Initialize genealogy.
 g = Stammbaum(max_level)
 
+# Set first advisor.
 student_node = Node(student_ident, student_name)
 g.set_advisors(student_node, 1)
+
 #for m in mathematicians:
 #    print mathematicians[m]
 
