@@ -14,8 +14,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 PYTHON = python
+DOT = dot
+PANDOC = pandoc
 
-.PHONY: stammbaum
-stammbaum:
+.PHONY: default
+default:
 	$(PYTHON) main.py
+
+.PHONY: readme
+readme: README.pdf
+README.pdf: README.md
+	$(PANDOC) -o README.pdf README.md
 
