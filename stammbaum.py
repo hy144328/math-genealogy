@@ -35,9 +35,14 @@ class Stammbaum:
 
     # Recursive function.
     def set_advisors(self, parent, level=0):
+        # Add parent.
+        self.mathematicians[parent.ident] = parent
+
+        # Exit recursion.
         if level == self.max_level:
             return
     
+        # Open URL.
         response = urllib2.urlopen(address_base+str(parent.ident))
         the_page = response.read()
         idx1 = the_page.find('Advisor')
@@ -57,13 +62,11 @@ class Stammbaum:
             idx2 = the_page.find('<', idx1)
             name = the_page[idx1:idx2]
             
-            self.mathematicians[ident] = Node(ident, name)
+            # Add child.
             parent.advisors.append(ident)
+            print "{:d}, {:s}".format(level+1, name)
+            self.set_advisors(Node(ident, name), level+1)
     
+            # Next advisor.
             idx1 = the_page.find('Advisor', idx1)
     
-        print "{:d}, {:s}".format(level+1, ", ".join([self.mathematicians[m].name for m in parent.advisors]))
-    
-        for m in parent.advisors:
-            self.set_advisors(self.mathematicians[m], level+1)
-
