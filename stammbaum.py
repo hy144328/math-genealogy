@@ -17,59 +17,53 @@
 
 import urllib2
 
-# settings
-max_level = 5
-address_base = 'https://genealogy.math.ndsu.nodak.edu/id.php?id=' # Matthew Juniper
-
-# parent
-student_ident = 149678
-student_name = 'Matthew P. Juniper'
-
-mathematicians = {}
+address_base = 'https://genealogy.math.ndsu.nodak.edu/id.php?id='
 
 class Node:
-    ident = -1
-    name = ''
-    advisors = []
-
-    def __init__(self, anIdent, aName):
-        self.ident = anIdent
-        self.name = aName
+    def __init__(self, ident, name):
+        self.ident = ident
+        self.name = name
         self.advisors = []
 
     def __str__(self):
         return "({:d}, {:s})".format(self.ident, self.name)
 
-def set_advisors(parent, level):
-    if level == max_level:
-        return
+class Stammbaum:
+    def __init__(self, max_level):
+        self.mathematicians = {}
+        self.max_level = max_level
 
-    response = urllib2.urlopen(address_base+str(parent.ident))
-    the_page = response.read()
-    idx1 = the_page.find('Advisor')
+    # Recursive function.
+    def set_advisors(self, parent, level=0):
+        if level == self.max_level:
+            return
     
-    while idx1 != -1:
-        # ID
-        idx1 = the_page.find('id=', idx1) + 3
-        idx2 = the_page.find('"', idx1)
-        print the_page[idx1:idx2]
-        try:
-            ident = int(the_page[idx1:idx2])
-        except ValueError:
-            continue
+        response = urllib2.urlopen(address_base+str(parent.ident))
+        the_page = response.read()
+        idx1 = the_page.find('Advisor')
         
-        # name
-        idx1 = idx2 + 2
-        idx2 = the_page.find('<', idx1)
-        name = the_page[idx1:idx2]
-        
-        mathematicians[ident] = Node(ident, name)
-        parent.advisors.append(ident)
-
-        idx1 = the_page.find('Advisor', idx1)
-
-    print level+1, [mathematicians[m].name for m in parent.advisors]
-
-    for m in parent.advisors:
-        set_advisors(mathematicians[m], level+1)
+        while idx1 != -1:
+            # ID
+            idx1 = the_page.find('id=', idx1) + 3
+            idx2 = the_page.find('"', idx1)
+            print the_page[idx1:idx2]
+            try:
+                ident = int(the_page[idx1:idx2])
+            except ValueError:
+                continue
+            
+            # name
+            idx1 = idx2 + 2
+            idx2 = the_page.find('<', idx1)
+            name = the_page[idx1:idx2]
+            
+            self.mathematicians[ident] = Node(ident, name)
+            parent.advisors.append(ident)
+    
+            idx1 = the_page.find('Advisor', idx1)
+    
+        print level+1, [self.mathematicians[m].name for m in parent.advisors]
+    
+        for m in parent.advisors:
+            self.set_advisors(self.mathematicians[m], level+1)
 

@@ -17,9 +17,17 @@
 
 from stammbaum import *
 
+# settings
+max_level = 5
+
+# parent
+student_ident = 149678
+student_name = 'Matthew P. Juniper'
+
+g = Stammbaum(max_level)
+
 student_node = Node(student_ident, student_name)
-mathematicians[student_ident] = student_node
-set_advisors(student_node, 0)
-for m in mathematicians:
-    print mathematicians[m]
+g.set_advisors(student_node, 0)
+#for m in mathematicians:
+#    print mathematicians[m]
 
