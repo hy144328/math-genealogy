@@ -72,7 +72,7 @@ class Stammbaum:
             # name
             idx1 = idx2 + 2
             idx2 = the_page.find('<', idx1)
-            name = the_page[idx1:idx2].replace("  ", " ")
+            name = " ".join(the_page[idx1:idx2].split())
             
             # Add child.
             parent.advisors.append(ident)
