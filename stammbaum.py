@@ -79,18 +79,20 @@ class Stammbaum:
             idx1 = the_page.find('Advisor', idx1)
 
     # Enforce maximum level.
+    # Run twice to ensure that there are no dangling advisors.
     def cut_tree(self, parent, level=0):
-        # Recursion.
         for child_id in parent.advisors:
-            try:
+            try: # Recursion.
                 child = self.mathematicians[child_id]
                 self.cut_tree(child, level+1)
-            except(KeyError):
-                pass
+            except(KeyError): # Remove dangling advisor.
+                parent.advisors.remove(child_id)
 
+        # Remove node.
         if level > self.max_level:
             del self.mathematicians[parent.ident]
 
+        # Leaves have no children.
         if level == self.max_level:
             parent.advisors = []
 
@@ -99,14 +101,15 @@ class Stammbaum:
         # First version.
         output_file_temp = output_file+".temp"
         f = open(output_file_temp, 'w')
-
         f.write("digraph Stammbaum {\n")
 
+        # Print nodes.
         for it_id in self.mathematicians:
             f.write("\"{:s}\";\n".format(self.mathematicians[it_id].name))
 
         f.write("\n")
 
+        # Print vertices.
         for it in root_nodes:
             self.print_dot_branch(it, f)
 

@@ -20,22 +20,19 @@
 from stammbaum import *
 
 # settings
-max_level = 8
+max_level = 10
 
 # parent
 student_ident = 149678
 student_name = 'Matthew P. Juniper'
-
-# Initialize genealogy.
-g = Stammbaum(max_level)
-
-# Set first advisor.
 student_node = Node(student_ident, student_name)
+
+# Generate genealogy.
+g = Stammbaum(max_level)
 g.set_advisors(student_node, 1)
 g.cut_tree(student_node, 1)
+g.cut_tree(student_node, 1) # Run for a second time.
 
-#for m in mathematicians:
-#    print mathematicians[m]
-
+# Source code for visualization.
 g.print_dot([student_node])
 
