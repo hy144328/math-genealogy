@@ -84,7 +84,7 @@ class Stammbaum:
     # Enforce maximum level.
     # Run twice to ensure that there are no dangling advisors.
     def cut_tree(self, parent, level=0):
-        for child_id in parent.advisors:
+        for child_id in parent.advisors[:]:
             try: # Recursion.
                 child = self.mathematicians[child_id]
                 self.cut_tree(child, level+1)
