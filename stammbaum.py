@@ -72,4 +72,40 @@ class Stammbaum:
     
             # Next advisor.
             idx1 = the_page.find('Advisor', idx1)
-    
+
+    # Print dot input.
+    def print_dot(self, root_nodes, output_file="stammbaum.gv"):
+        # First version.
+        output_file_temp = output_file+".temp"
+        f = open(output_file_temp, 'w')
+
+        f.write("digraph Stammbaum {\n")
+
+        for it_id in self.mathematicians:
+            f.write("\"{:s}\";\n".format(self.mathematicians[it_id].name))
+
+        f.write("\n")
+
+        for it in root_nodes:
+            self.print_dot_branch(it, f)
+
+        f.write("}\n")
+        f.close()
+
+        # Second version.
+        self.print_dot_uniq(output_file)
+
+    # Recursive function.
+    def print_dot_branch(self, parent_node, f):
+        for child_id in parent_node.advisors:
+            child_node = self.mathematicians[child_id]
+            f.write("\"{:s}\" -> \"{:s}\";\n".format(parent_node.name, child_node.name))
+            self.print_dot_branch(child_node, f)
+            
+    def print_dot_uniq(self, output_file):
+        pass
+
+
+
+
+

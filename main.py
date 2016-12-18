@@ -20,7 +20,7 @@
 from stammbaum import *
 
 # settings
-max_level = 10
+max_level = 5
 
 # parent
 student_ident = 149678
@@ -35,4 +35,6 @@ g.set_advisors(student_node, 1)
 
 #for m in mathematicians:
 #    print mathematicians[m]
+
+g.print_dot([student_node])
 
