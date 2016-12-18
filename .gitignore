@@ -1,6 +1,6 @@
-*.eps
-*.gv
-*.log
+stammbaum.eps
+stammbaum.gv
+stammbaum.log
 *.pyc
 
 README.pdf

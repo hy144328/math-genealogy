@@ -34,8 +34,8 @@ README.pdf: README.md
 .PHONY: clean
 clean:
 	-rm README.pdf
-	-rm *.eps
-	-rm *.gv
-	-rm *.log
+	-rm stammbaum.eps
+	-rm stammbaum.gv
+	-rm stammbaum.log
 	-rm *.pyc
 
