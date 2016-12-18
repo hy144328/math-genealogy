@@ -59,11 +59,11 @@ class Stammbaum:
             # ID
             idx1 = the_page.find('id=', idx1) + 3
             idx2 = the_page.find('"', idx1)
-            #print "{:s}".format(the_page[idx1:idx2])
             try:
                 ident = int(the_page[idx1:idx2])
             except ValueError:
                 print "{:d}, {:s}".format(level+1, "Advisor unknown")
+                idx1 = the_page.find('Advisor', idx1)
                 continue
             
             # name
@@ -74,7 +74,7 @@ class Stammbaum:
             # Add child.
             parent.advisors.append(ident)
             self.set_advisors(Node(ident, name), level+1)
-    
+
             # Next advisor.
             idx1 = the_page.find('Advisor', idx1)
 
