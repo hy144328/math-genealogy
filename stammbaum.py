@@ -55,12 +55,13 @@ class Stammbaum:
             try:
                 ident = int(the_page[idx1:idx2])
             except ValueError:
+                print "{:d}, {:s}".format(level+1, "Advisor unknown")
                 continue
             
             # name
             idx1 = idx2 + 2
             idx2 = the_page.find('<', idx1)
-            name = the_page[idx1:idx2]
+            name = the_page[idx1:idx2].replace("  ", " ")
             
             # Add child.
             parent.advisors.append(ident)
