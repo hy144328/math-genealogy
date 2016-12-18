@@ -46,7 +46,7 @@ class Stammbaum:
             # ID
             idx1 = the_page.find('id=', idx1) + 3
             idx2 = the_page.find('"', idx1)
-            print the_page[idx1:idx2]
+            #print "{:s}".format(the_page[idx1:idx2])
             try:
                 ident = int(the_page[idx1:idx2])
             except ValueError:
@@ -62,7 +62,7 @@ class Stammbaum:
     
             idx1 = the_page.find('Advisor', idx1)
     
-        print level+1, [self.mathematicians[m].name for m in parent.advisors]
+        print "{:d}, {:s}".format(level+1, ", ".join([self.mathematicians[m].name for m in parent.advisors]))
     
         for m in parent.advisors:
             self.set_advisors(self.mathematicians[m], level+1)
