@@ -31,4 +31,6 @@ README.pdf: README.md
 clean:
 	-rm README.pdf
 	-rm *.pyc
+	-rm *.gv
+	-rm *.eps
 
