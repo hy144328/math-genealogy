@@ -19,7 +19,7 @@ PANDOC = pandoc
 
 .PHONY: default
 default:
-	$(PYTHON) main.py
+	$(PYTHON) main.py > stammbaum.log 2>&1
 	$(DOT) -Teps stammbaum.gv > stammbaum.eps
 
 .PHONY: test
@@ -34,7 +34,8 @@ README.pdf: README.md
 .PHONY: clean
 clean:
 	-rm README.pdf
-	-rm *.pyc
-	-rm *.gv
 	-rm *.eps
+	-rm *.gv
+	-rm *.log
+	-rm *.pyc
 

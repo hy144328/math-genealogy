@@ -105,6 +105,8 @@ class Stammbaum:
         output_file_temp = output_file+".temp"
         f = open(output_file_temp, 'w')
         f.write("digraph Stammbaum {\n")
+        f.write("rankdir = BT;\n")
+        f.write("\n")
 
         # Print nodes.
         for it_id in self.mathematicians:
@@ -112,7 +114,7 @@ class Stammbaum:
 
         f.write("\n")
 
-        # Print vertices.
+        # Print edges.
         for it in root_nodes:
             self.print_dot_branch(it, f)
 
