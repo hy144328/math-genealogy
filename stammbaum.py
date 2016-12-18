@@ -38,11 +38,15 @@ class Stammbaum:
 
     # Recursive function.
     def set_advisors(self, parent, level=0):
-        # Add parent.
+        # Exit recursion if new branch meets old branch.
+        if parent.ident in self.mathematicians:
+            return
+
+        # Add node.
         self.mathematicians[parent.ident] = parent
         print "{:d}, {:s} ({:d})".format(level, parent.name, parent.ident)
 
-        # Exit recursion.
+        # Exit recursion if maximum level is reached.
         if level == self.max_level:
             return
     
