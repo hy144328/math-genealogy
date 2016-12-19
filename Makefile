@@ -13,14 +13,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+MAKE = make
 PYTHON = python
 DOT = dot
 PANDOC = pandoc
 
 .PHONY: default
 default:
-	$(PYTHON) main.py > stammbaum.log 2>&1
+	$(MAKE) stammbaum.gv
+	$(MAKE) stammbaum.eps
+	$(MAKE) stammbaum.png
+
+stammbaum.eps: stammbaum.gv
 	$(DOT) -Teps stammbaum.gv > stammbaum.eps
+
+stammbaum.png: stammbaum.gv
+	$(DOT) -Tpng stammbaum.gv > stammbaum.png
+
+stammbaum.gv: main.py stammbaum.py
+	$(PYTHON) main.py > stammbaum.log 2>&1
 
 .PHONY: test
 test:
@@ -37,5 +48,6 @@ clean:
 	-rm stammbaum.eps
 	-rm stammbaum.gv
 	-rm stammbaum.log
+	-rm stammbaum.png
 	-rm *.pyc
 
