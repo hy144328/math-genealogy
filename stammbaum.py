@@ -139,8 +139,15 @@ class Stammbaum:
 
         for line in open(output_file+".temp", 'r'):
             if line not in lines_seen:
-                f.write(line)
                 lines_seen.add(line)
+                # Remove parentheses.
+                while True:
+                    idx1 = line.find(' (')
+                    idx2 = line.find(')')
+                    if idx1 == -1 or idx2 == -1:
+                        break
+                    line = line[:idx1] + line[idx2+1:]
+                f.write(line)
 
         f.close()
 
