@@ -3,5 +3,9 @@ stammbaum.eps
 stammbaum.gv
 stammbaum.log
 stammbaum.png
+*.aux
+*.log
+*.out
+*.pdf
 *.pyc
-
+*.synctex.gz

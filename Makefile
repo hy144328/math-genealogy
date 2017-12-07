@@ -23,6 +23,7 @@ default:
 	$(MAKE) stammbaum.gv
 	$(MAKE) stammbaum.eps
 	$(MAKE) stammbaum.png
+	pdflatex -synctex=1 -interaction=nonstopmode -shell-escape main.tex
 
 stammbaum.eps: stammbaum.gv
 	$(DOT) -Teps stammbaum.gv > stammbaum.eps
@@ -49,5 +50,10 @@ clean:
 	-rm stammbaum.gv
 	-rm stammbaum.log
 	-rm stammbaum.png
+	-rm *.aux
+	-rm *.log
+	-rm *.out
+	-rm *.pdf
 	-rm *.pyc
+	-rm *.synctex.gz
 

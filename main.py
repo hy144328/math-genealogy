@@ -33,6 +33,11 @@ g.set_advisors(student_node, 1)
 g.cut_tree(student_node, 1)
 g.cut_tree(student_node, 1) # Run for a second time (see stammbaum).
 
+# NPJ.
+npj_node = Node(-1, 'Nicholas P. Jamieson')
+npj_node.advisors.append(student_ident)
+g.mathematicians[npj_node.ident] = npj_node
+
 # Source code for dot.
-g.print_dot([student_node])
+g.print_dot([npj_node])
 
