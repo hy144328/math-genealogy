@@ -1,8 +1,9 @@
 README.pdf
-stammbaum.eps
-stammbaum.gv
-stammbaum.log
-stammbaum.png
+
+*.eps
+*.gv
+*.png
+
 *.aux
 *.log
 *.out

@@ -13,47 +13,45 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-MAKE = make
-PYTHON = python
 DOT = dot
+LATEX = pdflatex -synctex=1 -interaction=nonstopmode -shell-escape
+MAKE = make
 PANDOC = pandoc
+PYTHON = python
 
 .PHONY: default
-default:
-	$(MAKE) stammbaum.gv
-	$(MAKE) stammbaum.eps
-	$(MAKE) stammbaum.png
-	pdflatex -synctex=1 -interaction=nonstopmode -shell-escape main.tex
+default: main
 
-stammbaum.eps: stammbaum.gv
-	$(DOT) -Teps stammbaum.gv > stammbaum.eps
+%:
+	$(MAKE) $@.gv
+	$(MAKE) $@.eps
+	$(MAKE) $@.png
+	$(MAKE) $@.pdf
 
-stammbaum.png: stammbaum.gv
-	$(DOT) -Tpng stammbaum.gv > stammbaum.png
+%.pdf: %.eps %.tex
+	$(LATEX) $(basename $<).tex
 
-stammbaum.gv: main.py stammbaum.py
-	$(PYTHON) main.py > stammbaum.log 2>&1
+%.eps: %.gv
+	$(DOT) -Teps $< > $@
 
-.PHONY: test
-test:
-	$(PYTHON) main.py | tee stammbaum.log 2>&1
+%.png: %.gv
+	$(DOT) -Tpng $< > $@
 
-.PHONY: readme
-readme: README.pdf
+%.gv: %.py
+	$(PYTHON) $< $(basename $<).gv
+
 README.pdf: README.md
 	$(PANDOC) -o README.pdf README.md
 
 .PHONY: clean
 clean:
 	-rm README.pdf
-	-rm stammbaum.eps
-	-rm stammbaum.gv
-	-rm stammbaum.log
-	-rm stammbaum.png
+	-rm *.eps
+	-rm *.gv
+	-rm *.png
 	-rm *.aux
 	-rm *.log
 	-rm *.out
 	-rm *.pdf
 	-rm *.pyc
 	-rm *.synctex.gz
-
