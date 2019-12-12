@@ -193,4 +193,3 @@ class Stammbaum:
                 f.write(line)
 
         f.close()
-

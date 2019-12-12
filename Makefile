@@ -20,7 +20,7 @@ PANDOC = pandoc
 PYTHON = python
 
 .PHONY: default
-default: main
+default: juniper
 
 %:
 	$(MAKE) $@.gv
