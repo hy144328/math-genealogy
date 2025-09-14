@@ -15,20 +15,62 @@
 # You should have received a copy of the GNU General Public License
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
 
+import dataclasses
 import typing
 
-class Node:
+import networkx as nx
+
+@dataclasses.dataclass(frozen=True)
+class StammbaumNode:
+    ident: int
+    name: str
+    year: typing.Optional[int]
+
+class Stammbaum:
     def __init__(
         self,
-        ident: str,
-        name: str,
-        year: typing.Optional[int],
-        parents: typing.Optional[typing.Sequence["Node"]],
+        root: StammbaumNode,
     ):
-        self.ident = ident
-        self.name = name
-        self.year = year
-        self.parents = [*parents] if parents is not None else []
+        self.g = nx.DiGraph()
+        self.root = root
+        self.set_node(root)
 
-    def __str__(self):
-        return f"{self.ident}, {self.name} ({self.year})"
+    def set_node(self, node: StammbaumNode):
+        self.g.add_node(
+            node.ident,
+            name = node.name,
+            year = node.year,
+        )
+
+    def get_node(self, ident: int) -> StammbaumNode:
+        node = self.g.nodes[ident]
+        return StammbaumNode(
+            ident = ident,
+            name = node["name"],
+            year = node["year"],
+        )
+
+    def has_node(self, ident: int) -> bool:
+        return ident in self.g.nodes
+
+    def _validate_node(self, ident: int):
+        if ident not in self.g.nodes:
+            raise KeyError(f"Unknown node: {ident}.")
+
+    def add_ancestors(
+        self,
+        ident: int,
+        ancestors: typing.Sequence[int],
+    ):
+        self._validate_node(ident)
+
+        for ancestor_id in ancestors:
+            self._validate_node(ident)
+            self.g.add_edge(ident, ancestor_id)
+
+    def get_ancestors(self, ident: int) -> typing.List[int]:
+        node = self.get_node(ident)
+        return [
+            node_it["ident"]
+            for node_it in self.g.successors(node)
+        ]
