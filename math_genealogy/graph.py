@@ -57,6 +57,10 @@ class Stammbaum:
         if ident not in self.g.nodes:
             raise KeyError(f"Unknown node: {ident}.")
 
+    def _validate_edge(self, pred: int, succ: int):
+        if pred == succ:
+            raise ValueError(f"Self-ancestry is not allowed: {pred}.")
+
     def add_ancestors(
         self,
         ident: int,
@@ -65,7 +69,8 @@ class Stammbaum:
         self._validate_node(ident)
 
         for ancestor_id in ancestors:
-            self._validate_node(ident)
+            self._validate_node(ancestor_id)
+            self._validate_edge(ident, ancestor_id)
             self.g.add_edge(ident, ancestor_id)
 
     def get_ancestors(self, ident: int) -> typing.List[int]:

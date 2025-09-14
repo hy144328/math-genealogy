@@ -31,6 +31,12 @@ def test_stammbaum(
 
     g.add_ancestors(0, ancestors=[1, 2])
 
+    with pytest.raises(ValueError):
+        g.add_ancestors(0, ancestors=[0])
+
+    with pytest.raises(KeyError):
+        g.add_ancestors(0, ancestors=[-1])
+
     ancestors_0 = g.get_ancestors(0)
     assert 1 in ancestors_0
     assert 2 in ancestors_0
