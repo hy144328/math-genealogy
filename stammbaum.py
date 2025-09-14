@@ -20,8 +20,6 @@
 import os
 import urllib2
 
-address_base = 'https://genealogy.math.ndsu.nodak.edu/id.php?id='
-
 class Stammbaum:
     def __init__(self, max_level):
         self.mathematicians = {}
