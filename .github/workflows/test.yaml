@@ -18,7 +18,7 @@ jobs:
         poetry install --with=dev
     - name: Unit tests
       run: |
-        python3 -m pytest
+        poetry run pytest
     - name: Test coverage
       run: |
-        coverage run -m pytest
+        poetry run coverage run -m pytest
