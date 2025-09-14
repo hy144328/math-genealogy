@@ -22,27 +22,12 @@ import urllib.parse
 import lxml.etree
 import lxml.html
 
-import math_genealogy.graph
-
 BASE_URL = urllib.parse.urlparse("https://genealogy.math.ndsu.nodak.edu/id.php")
 
-def load_profile(ident: int) -> lxml.etree.ElementTree:
+def load_page(ident: int) -> lxml.etree.ElementTree:
     query = urllib.parse.urlencode({"id": ident})
     url = BASE_URL._replace(query=query)
     return lxml.html.parse(urllib.parse.urlunparse(url))
-
-def parse_profile(
-    ident: int,
-    page: lxml.etree.ElementTree,
-) -> typing.Tuple[
-    math_genealogy.graph.StammbaumNode,
-    typing.List[int],
-]:
-    return math_genealogy.graph.StammbaumNode(
-        ident,
-        name = parse_name(page),
-        year = parse_year(page),
-    ), parse_advisors(page)
 
 def parse_name(page: lxml.etree.ElementTree) -> str:
     e = page.find(".//h2")
