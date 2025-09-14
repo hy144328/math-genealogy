@@ -22,16 +22,6 @@ import urllib2
 
 address_base = 'https://genealogy.math.ndsu.nodak.edu/id.php?id='
 
-class Node:
-    def __init__(self, ident, name):
-        self.ident = ident
-        self.name = name
-        self.year = None
-        self.advisors = []
-
-    def __str__(self):
-        return "({:d}, {:s})".format(self.ident, self.name)
-
 class Stammbaum:
     def __init__(self, max_level):
         self.mathematicians = {}
@@ -50,7 +40,7 @@ class Stammbaum:
         # Exit recursion if maximum level is reached.
         if level == self.max_level:
             return
-    
+
         # Open URL.
         response = urllib2.urlopen(address_base+str(parent.ident))
         the_page = response.read()
@@ -81,12 +71,12 @@ class Stammbaum:
             idx1 = the_page.find('id=', idx1) + 3
             idx2 = the_page.find('"', idx1)
             ident = int(the_page[idx1:idx2])
-            
+
             # name
             idx1 = idx2 + 2
             idx2 = the_page.find('<', idx1)
             name = " ".join(the_page[idx1:idx2].split())
-            
+
             # Add child.
             parent.advisors.append(ident)
             self.set_advisors(Node(ident, name), level+1)
@@ -170,7 +160,7 @@ class Stammbaum:
             child_node = self.mathematicians[child_id]
             f.write("\"{:s}\" -> \"{:s}\" [dir=back];\n".format(parent_node.name, child_node.name))
             self.print_dot_branch(child_node, f)
-            
+
     # Remove duplicate lines.
     def print_dot_uniq(self, output_file):
         f = open(output_file, 'w')
