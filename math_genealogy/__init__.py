@@ -14,3 +14,52 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
+
+import logging
+import sys
+import typing
+
+import math_genealogy.graph
+import math_genealogy.parse
+
+logger = logging.getLogger(__name__)
+
+def grow(
+    tree: math_genealogy.graph.Stammbaum,
+    root: int,
+    descendants: typing.Sequence[int],
+    level: int = 0,
+    max_level: int = sys.maxsize,
+):
+    if level > max_level:
+        return
+
+    if root in tree:
+        logger.debug(f"Skip {root}.")
+
+        for descendant_it in descendants:
+            logger.info(f"From {descendant_it} to {root}.")
+            tree.add_ancestors(descendant_it, [root])
+
+        return
+
+    page = math_genealogy.parse.load_page(root)
+    name = math_genealogy.parse.parse_name(page)
+    year = math_genealogy.parse.parse_year(page)
+
+    node = math_genealogy.graph.StammbaumNode(root, name=name, year=year)
+    tree.add(node)
+
+    for descendant_it in descendants:
+        logger.info(f"From {descendant_it} to {root}.")
+        tree.add_ancestors(descendant_it, [root])
+
+    ancestors = math_genealogy.parse.parse_advisors(page)
+    for ancestor_it in ancestors:
+        grow(
+            tree,
+            ancestor_it,
+            [root],
+            level = level+1,
+            max_level = max_level,
+        )
