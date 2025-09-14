@@ -27,13 +27,8 @@ class StammbaumNode:
     year: typing.Optional[int]
 
 class Stammbaum:
-    def __init__(
-        self,
-        root: StammbaumNode,
-    ):
+    def __init__(self):
         self.g = nx.DiGraph()
-        self.root = root
-        self.add(root)
 
     def add(self, node: StammbaumNode):
         self.g.add_node(

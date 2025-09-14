@@ -18,84 +18,80 @@
 import logging
 import re
 import typing
-import urllib.parse
 
 import lxml.etree
 import lxml.html
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = urllib.parse.urlparse("https://genealogy.math.ndsu.nodak.edu/id.php")
+class Parser:
+    RE_ADVISOR_URL = re.compile(r"^id.php\?id=([0-9]+)$")
+    RE_YEAR = re.compile(r"[^0-9]([0-9]{4})$")
 
-def load_page(ident: int) -> lxml.etree.ElementTree:    # pragma: no cover
-    query = urllib.parse.urlencode({"id": ident})
-    url = BASE_URL._replace(query=query)
-    return lxml.html.parse(urllib.parse.urlunparse(url))
+    @staticmethod
+    def parse_name(page: lxml.etree.ElementTree) -> str:
+        e = page.find(".//h2")
 
-def parse_name(page: lxml.etree.ElementTree) -> str:
-    e = page.find(".//h2")
+        if e is None:   # pragma: no cover
+            raise KeyError("Page has no header.")
 
-    if e is None:   # pragma: no cover
-        raise KeyError("Page has no header.")
+        assert e.text is not None
+        return e.text.strip()
 
-    assert e.text is not None
-    return e.text.strip()
+    @staticmethod
+    def parse_year(page: lxml.etree.ElementTree) -> typing.Optional[int]:
+        year = None
 
-RE_YEAR = re.compile(r"[^0-9]([0-9]{4})$")
+        spans = page.findall(".//span")
+        if len(spans) == 0: # pragma: no cover
+            raise KeyError("Page has no span.")
 
-def parse_year(page: lxml.etree.ElementTree) -> typing.Optional[int]:
-    year = None
+        for span_it in spans:
+            if span_it.tail is None:    # pragma: no cover
+                continue
 
-    spans = page.findall(".//span")
-    if len(spans) == 0: # pragma: no cover
-        raise KeyError("Page has no span.")
+            match_it = Parser.RE_YEAR.search(span_it.tail)
+            if match_it is None:
+                continue
 
-    for span_it in spans:
-        if span_it.tail is None:    # pragma: no cover
-            continue
+            year = int(match_it.group(1))
+            break
 
-        match_it = RE_YEAR.search(span_it.tail)
-        if match_it is None:
-            continue
+        if year is None:    # pragma: no cover
+            logger.warning("Page has no year.")
 
-        year = int(match_it.group(1))
-        break
+        return year
 
-    if year is None:    # pragma: no cover
-        logger.warning("Page has no year.")
+    @staticmethod
+    def parse_advisors(page: lxml.etree.ElementTree) -> typing.List[int]:
+        res: typing.List[int] = []
 
-    return year
+        ps = page.findall(".//p")
+        if len(ps) == 0:    # pragma: no cover
+            raise KeyError("Page has no paragraphs.")
 
-RE_ADVISOR_URL = re.compile(r"^id.php\?id=([0-9]+)$")
+        for p_it in ps:
+            if p_it.text is None:   # pragma: no cover
+                continue
 
-def parse_advisors(page: lxml.etree.ElementTree) -> typing.List[int]:
-    res: typing.List[int] = []
+            if not p_it.text.startswith("Advisor"):
+                continue
 
-    ps = page.findall(".//p")
-    if len(ps) == 0:    # pragma: no cover
-        raise KeyError("Page has no paragraphs.")
+            as_it = p_it.findall("./a")
+            if len(as_it) == 0:    # pragma: no cover
+                raise KeyError("Advisor has no URL.")
 
-    for p_it in ps:
-        if p_it.text is None:   # pragma: no cover
-            continue
+            for a_it in as_it:
+                href_it = a_it.get("href")
+                assert href_it is not None
 
-        if not p_it.text.startswith("Advisor"):
-            continue
+                mat_it = Parser.RE_ADVISOR_URL.search(href_it)
+                if mat_it is None:  # pragma: no cover
+                    raise ValueError(f"Advisor URL does not match: {href_it}.")
 
-        a_it = p_it.find("./a")
-        if a_it is None:    # pragma: no cover
-            raise KeyError("Advisor has no URL.")
+                res.append(int(mat_it.group(1)))
 
-        href_it = a_it.get("href")
-        assert href_it is not None
+        if len(res) == 0:   # pragma: no cover
+            logger.warning("Page has no advisors.")
 
-        mat_it = RE_ADVISOR_URL.search(href_it)
-        if mat_it is None:  # pragma: no cover
-            raise ValueError(f"Advisor URL does not match: {href_it}.")
-
-        res.append(int(mat_it.group(1)))
-
-    if len(res) == 0:   # pragma: no cover
-        logger.warning("Page has no advisors.")
-
-    return res
+        return res
