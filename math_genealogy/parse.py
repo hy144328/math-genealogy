@@ -24,7 +24,7 @@ import lxml.html
 
 BASE_URL = urllib.parse.urlparse("https://genealogy.math.ndsu.nodak.edu/id.php")
 
-def load_page(ident: int) -> lxml.etree.ElementTree:
+def load_page(ident: int) -> lxml.etree.ElementTree:    # pragma: no cover
     query = urllib.parse.urlencode({"id": ident})
     url = BASE_URL._replace(query=query)
     return lxml.html.parse(urllib.parse.urlunparse(url))
@@ -54,16 +54,14 @@ def parse_advisors(page: lxml.etree.ElementTree) -> typing.List[int]:
     res: typing.List[int] = []
 
     for p_it in page.findall(".//p"):
-        if p_it.text is None:
+        if p_it.text is None:   # pragma: no cover
             continue
 
         if not p_it.text.startswith("Advisor"):
             continue
 
         a_it = p_it.find("./a")
-
-        if a_it is None:
-            continue
+        assert a_it is not None
 
         href_it = a_it.get("href")
         assert href_it is not None
