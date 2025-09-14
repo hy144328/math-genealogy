@@ -33,16 +33,16 @@ class Stammbaum:
     ):
         self.g = nx.DiGraph()
         self.root = root
-        self.set_node(root)
+        self.add(root)
 
-    def set_node(self, node: StammbaumNode):
+    def add(self, node: StammbaumNode):
         self.g.add_node(
             node.ident,
             name = node.name,
             year = node.year,
         )
 
-    def get_node(self, ident: int) -> StammbaumNode:
+    def __getitem__(self, ident: int) -> StammbaumNode:
         node = self.g.nodes[ident]
         return StammbaumNode(
             ident = ident,
@@ -50,7 +50,7 @@ class Stammbaum:
             year = node["year"],
         )
 
-    def has_node(self, ident: int) -> bool:
+    def __contains__(self, ident: int) -> bool:
         return ident in self.g.nodes
 
     def _validate_node(self, ident: int):
@@ -69,8 +69,4 @@ class Stammbaum:
             self.g.add_edge(ident, ancestor_id)
 
     def get_ancestors(self, ident: int) -> typing.List[int]:
-        node = self.get_node(ident)
-        return [
-            node_it["ident"]
-            for node_it in self.g.successors(node)
-        ]
+        return list(self.g.successors(ident))
