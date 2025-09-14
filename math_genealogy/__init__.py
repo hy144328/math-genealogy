@@ -34,7 +34,7 @@ class Djinn:
         self.loader = loader
         self.parser = parser
 
-    def grow(
+    def scrape(
         self,
         tree: math_genealogy.graph.Stammbaum,
         root: int,
@@ -67,7 +67,7 @@ class Djinn:
 
         ancestors = self.parser.parse_advisors(page)
         for ancestor_it in ancestors:
-            self.grow(
+            self.scrape(
                 tree,
                 ancestor_it,
                 [root],

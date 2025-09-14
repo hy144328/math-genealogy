@@ -42,11 +42,11 @@ def djinn(
 def tree() -> math_genealogy.graph.Stammbaum:
     return math_genealogy.graph.Stammbaum()
 
-def test(
+def test_scrape(
     djinn: math_genealogy.Djinn,
     tree: math_genealogy.graph.Stammbaum,
 ):
-    djinn.grow(tree, 149678, [], level=0, max_level=3)
+    djinn.scrape(tree, 149678, [], level=0, max_level=3)
 
     assert 149678 in tree
     assert 116101 in tree
