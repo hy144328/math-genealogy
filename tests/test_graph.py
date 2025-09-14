@@ -4,9 +4,9 @@ import math_genealogy.graph
 
 @pytest.fixture
 def g() -> math_genealogy.graph.Stammbaum:
-    return math_genealogy.graph.Stammbaum(
-        math_genealogy.graph.StammbaumNode(0, "hans", 2020),
-    )
+    res = math_genealogy.graph.Stammbaum()
+    res.add(math_genealogy.graph.StammbaumNode(0, "hans", 2020))
+    return res
 
 def test_stammbaum(
     g: math_genealogy.graph.Stammbaum,
