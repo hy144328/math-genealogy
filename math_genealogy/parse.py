@@ -77,18 +77,19 @@ class Parser:
             if not p_it.text.startswith("Advisor"):
                 continue
 
-            a_it = p_it.find("./a")
-            if a_it is None:    # pragma: no cover
+            as_it = p_it.findall("./a")
+            if len(as_it) == 0:    # pragma: no cover
                 raise KeyError("Advisor has no URL.")
 
-            href_it = a_it.get("href")
-            assert href_it is not None
+            for a_it in as_it:
+                href_it = a_it.get("href")
+                assert href_it is not None
 
-            mat_it = Parser.RE_ADVISOR_URL.search(href_it)
-            if mat_it is None:  # pragma: no cover
-                raise ValueError(f"Advisor URL does not match: {href_it}.")
+                mat_it = Parser.RE_ADVISOR_URL.search(href_it)
+                if mat_it is None:  # pragma: no cover
+                    raise ValueError(f"Advisor URL does not match: {href_it}.")
 
-            res.append(int(mat_it.group(1)))
+                res.append(int(mat_it.group(1)))
 
         if len(res) == 0:   # pragma: no cover
             logger.warning("Page has no advisors.")
