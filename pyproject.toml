@@ -1,0 +1,21 @@
+[project]
+name = "math-genealogy"
+version = "0.1.0"
+description = "MathDjinn."
+authors = [
+    {name = "Hans Yu",email = "hans.yu@outlook.de"}
+]
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+poetry = "^2.1.4"
+
