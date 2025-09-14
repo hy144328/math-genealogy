@@ -15,12 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 import re
 import typing
 import urllib.parse
 
 import lxml.etree
 import lxml.html
+
+logger = logging.getLogger(__name__)
 
 BASE_URL = urllib.parse.urlparse("https://genealogy.math.ndsu.nodak.edu/id.php")
 
@@ -31,29 +34,48 @@ def load_page(ident: int) -> lxml.etree.ElementTree:    # pragma: no cover
 
 def parse_name(page: lxml.etree.ElementTree) -> str:
     e = page.find(".//h2")
-    assert e is not None
+
+    if e is None:   # pragma: no cover
+        raise KeyError("Page has no header.")
+
     assert e.text is not None
     return e.text.strip()
 
 RE_YEAR = re.compile(r"[^0-9]([0-9]{4})$")
 
 def parse_year(page: lxml.etree.ElementTree) -> typing.Optional[int]:
-    return next(
-        (
-            int(match_it.group(1))
-            for span_it in page.findall(".//span")
-            if span_it.tail is not None
-            and (match_it := RE_YEAR.search(span_it.tail))
-        ),
-        None,
-    )
+    year = None
+
+    spans = page.findall(".//span")
+    if len(spans) == 0: # pragma: no cover
+        raise KeyError("Page has no span.")
+
+    for span_it in spans:
+        if span_it.tail is None:    # pragma: no cover
+            continue
+
+        match_it = RE_YEAR.search(span_it.tail)
+        if match_it is None:
+            continue
+
+        year = int(match_it.group(1))
+        break
+
+    if year is None:    # pragma: no cover
+        logger.warning("Page has no year.")
+
+    return year
 
 RE_ADVISOR_URL = re.compile(r"^id.php\?id=([0-9]+)$")
 
 def parse_advisors(page: lxml.etree.ElementTree) -> typing.List[int]:
     res: typing.List[int] = []
 
-    for p_it in page.findall(".//p"):
+    ps = page.findall(".//p")
+    if len(ps) == 0:    # pragma: no cover
+        raise KeyError("Page has no paragraphs.")
+
+    for p_it in ps:
         if p_it.text is None:   # pragma: no cover
             continue
 
@@ -61,14 +83,19 @@ def parse_advisors(page: lxml.etree.ElementTree) -> typing.List[int]:
             continue
 
         a_it = p_it.find("./a")
-        assert a_it is not None
+        if a_it is None:    # pragma: no cover
+            raise KeyError("Advisor has no URL.")
 
         href_it = a_it.get("href")
         assert href_it is not None
 
         mat_it = RE_ADVISOR_URL.search(href_it)
-        assert mat_it is not None
+        if mat_it is None:  # pragma: no cover
+            raise ValueError(f"Advisor URL does not match: {href_it}.")
 
         res.append(int(mat_it.group(1)))
+
+    if len(res) == 0:   # pragma: no cover
+        logger.warning("Page has no advisors.")
 
     return res
