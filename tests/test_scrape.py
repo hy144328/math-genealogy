@@ -2,13 +2,10 @@ import lxml.etree
 import lxml.html
 import pytest
 
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
-import math_genealogy
 import math_genealogy.graph
 import math_genealogy.load
 import math_genealogy.parse
+import math_genealogy.scrape
 
 class TestLoader(math_genealogy.load.Loader):
     d = {
@@ -32,21 +29,21 @@ def parser() -> math_genealogy.parse.Parser:
     return math_genealogy.parse.Parser()
 
 @pytest.fixture
-def djinn(
+def scraper(
     loader: math_genealogy.load.Loader,
     parser: math_genealogy.parse.Parser,
-) -> math_genealogy.Djinn:
-    return math_genealogy.Djinn(loader, parser)
+) -> math_genealogy.scrape.Scraper:
+    return math_genealogy.scrape.Scraper(loader, parser)
 
 @pytest.fixture
 def tree() -> math_genealogy.graph.Stammbaum:
     return math_genealogy.graph.Stammbaum()
 
 def test_scrape(
-    djinn: math_genealogy.Djinn,
+    scraper: math_genealogy.scrape.Scraper,
     tree: math_genealogy.graph.Stammbaum,
 ):
-    djinn.scrape(tree, 149678, [], level=0, max_level=3)
+    scraper.scrape(tree, 149678, [], level=0, max_level=3)
 
     assert 149678 in tree
     assert 116101 in tree
