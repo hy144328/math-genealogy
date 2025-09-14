@@ -23,7 +23,7 @@ import lxml.html
 
 class Loader(abc.ABC):
     @abc.abstractmethod
-    def load_page(self, ident: int) -> lxml.etree.ElementTree:
+    def load_page(self, ident: int) -> lxml.etree.ElementTree:  # pragma: no cover
         raise NotImplementedError()
 
 class WebLoader(Loader):    # pragma: no cover
