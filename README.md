@@ -1,26 +1,19 @@
-MathDjinn
-=========
-
-Copyright (C) 2016  Hans Yu [hans.yu@outlook.de](mailto:hans.yu@outlook.de)
+# MathDjinn
 
 Search [Mathematics Genealogy Project](https://www.genealogy.math.ndsu.nodak.edu/) database, and visualize graph.
 
-Requirements
-------------
+## Requirements
 
 You need to have the following programs installed:
 
-*   `python`
 *   `dot`
 *   `pdflatex`
-*   `pandoc` (for documentation)
 
 On Ubuntu Linux, you can install the programs by executing the following commands:
 
-    sudo apt-get install python graphviz texlive pandoc
+    sudo apt-get install graphviz texlive
 
-Instructions
-------------
+## Instructions
 
 You need to prepare `foo.{py,tex}`:
 
