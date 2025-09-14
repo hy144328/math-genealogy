@@ -1,4 +1,4 @@
-# Copyright (C) 2016  Hans Yu <hans.yu@outlook.de>
+# Copyright (C) 2025  Hans Yu <hans.yu@outlook.de>
 #
 # This file is part of MathDjinn.
 #
