@@ -38,12 +38,14 @@ class Djinn:
         self,
         tree: math_genealogy.graph.Stammbaum,
         root: int,
-        descendants: typing.Sequence[int],
+        descendants: typing.Optional[typing.Sequence[int]] = None,
         level: int = 0,
         max_level: int = sys.maxsize,
     ):
         if level > max_level:
             return
+
+        descendants = descendants or []
 
         if root in tree:
             logger.debug(f"Skip {root}.")
