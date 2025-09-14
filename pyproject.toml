@@ -23,4 +23,5 @@ build-backend = "poetry.core.masonry.api"
 poetry = "^2.1.4"
 coverage = "^7.10.6"
 pytest = "^8.4.2"
+types-lxml = "^2025.8.25"
 
