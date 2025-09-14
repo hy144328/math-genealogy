@@ -10,3 +10,5 @@ README.pdf
 *.pdf
 *.pyc
 *.synctex.gz
+
+.coverage
