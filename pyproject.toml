@@ -1,6 +1,6 @@
 [project]
 name = "math-genealogy"
-version = "0.2.0"
+version = "0.3.0"
 description = "MathDjinn."
 authors = [
     {name = "Hans Yu",email = "hans.yu@outlook.de"}
