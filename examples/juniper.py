@@ -17,6 +17,7 @@ logging.basicConfig()
 math_genealogy_logger = logging.getLogger(math_genealogy.__name__)
 math_genealogy_logger.setLevel(logging.INFO)
 
+TIMEOUT_SECONDS = 30
 MAX_LEVEL = 3
 POOL_SIZE = 5
 ROOT_ID = 149678
@@ -37,8 +38,10 @@ STUDENTS = [
 ]
 
 async def main():
+    client_timeout = aiohttp.ClientTimeout(TIMEOUT_SECONDS)
+
     async with aiohttp.TCPConnector(limit_per_host=POOL_SIZE) as conn:
-        async with aiohttp.ClientSession(connector=conn) as session:
+        async with aiohttp.ClientSession(connector=conn, timeout=client_timeout) as session:
             loader = math_genealogy.load.WebLoader(session)
             parser = math_genealogy.parse.Parser()
             scraper = math_genealogy.scrape.Scraper(loader, parser)
@@ -49,13 +52,17 @@ async def main():
             scraper.prune(tree, max_level=MAX_LEVEL)
 
             for student_ct, (name_it, year_it) in enumerate(STUDENTS):
-                tree.add(math_genealogy.graph.StammbaumNode(-student_ct, name=name_it, year=year_it))
+                tree_node = math_genealogy.graph.StammbaumNode(
+                    -student_ct,
+                    name = name_it,
+                    year = year_it,
+                )
+                tree.add(tree_node)
                 tree.add_ancestors(-student_ct, [ROOT_ID])
 
             root, _ = os.path.splitext(__file__)
             with open(".".join([root, "gv"]), "w") as f:
                 printer.write(f, tree)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
