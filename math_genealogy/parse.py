@@ -79,7 +79,8 @@ class Parser:
 
             as_it = p_it.findall("./a")
             if len(as_it) == 0:    # pragma: no cover
-                raise KeyError("Advisor has no URL.")
+                logger.warning("Advisor has no URL.")
+                continue
 
             for a_it in as_it:
                 href_it = a_it.get("href")
@@ -87,7 +88,8 @@ class Parser:
 
                 mat_it = Parser.RE_ADVISOR_URL.search(href_it)
                 if mat_it is None:  # pragma: no cover
-                    raise ValueError(f"Advisor URL does not match: {href_it}.")
+                    logger.warning(f"Advisor URL does not match: {href_it}.")
+                    continue
 
                 res.append(int(mat_it.group(1)))
 

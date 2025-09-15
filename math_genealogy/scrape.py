@@ -75,7 +75,7 @@ class Scraper:
     ):
         while True:
             try:
-                logger.debug("Popping queue.")
+                logger.debug(f"Popping queue: {q.qsize()}.")
                 ident_it, level_it, descendants = await q.get()
             except asyncio.CancelledError as e:
                 logger.debug("Queue closed.")
@@ -113,7 +113,6 @@ class Scraper:
             for ancestor_it in reversed(ancestors):
                 await q.put((ancestor_it, level_it + 1, [ident_it]))
 
-            logger.debug("Task done.")
             q.task_done()
 
     def prune(
