@@ -72,14 +72,16 @@ class Scraper:
         max_level: int,
     ):
         while True:
+            logger.debug("Popping queue.")
             ident_it, level_it, descendants = await q.get()
 
             if level_it > max_level:
+                logger.debug(f"Skip {ident_it} because {level_it} > {max_level}.")
                 q.task_done()
                 continue
 
             if ident_it in tree:
-                logger.debug(f"Skip {ident_it}.")
+                logger.debug(f"Skip {ident_it} because repeated.")
 
                 for descendant_it in descendants:
                     logger.info(f"From {descendant_it} to {ident_it}.")
@@ -88,9 +90,12 @@ class Scraper:
                 q.task_done()
                 continue
 
+            logger.info(f"Loading and parsing page: {ident_it}.")
             page = await self.loader.load_page(ident_it)
+
             name = self.parser.parse_name(page)
             year = self.parser.parse_year(page)
+            ancestors = self.parser.parse_advisors(page)
 
             node = math_genealogy.graph.StammbaumNode(ident_it, name=name, year=year)
             tree.add(node)
@@ -99,10 +104,10 @@ class Scraper:
                 logger.info(f"From {descendant_it} to {ident_it}.")
                 tree.add_ancestors(descendant_it, [ident_it])
 
-            ancestors = self.parser.parse_advisors(page)
             for ancestor_it in reversed(ancestors):
                 await q.put((ancestor_it, level_it + 1, [ident_it]))
 
+            logger.debug("Task done.")
             q.task_done()
 
     def prune(
