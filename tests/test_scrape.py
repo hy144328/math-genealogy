@@ -1,13 +1,22 @@
 import asyncio
+import logging
 
 import lxml.etree
 import lxml.html
 import pytest
 
+import math_genealogy
 import math_genealogy.graph
 import math_genealogy.load
 import math_genealogy.parse
 import math_genealogy.scrape
+
+logging.basicConfig()
+math_genealogy_logger = logging.getLogger(math_genealogy.__name__)
+math_genealogy_logger.setLevel(logging.DEBUG)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class TestLoader(math_genealogy.load.Loader):
     d = {
@@ -20,8 +29,11 @@ class TestLoader(math_genealogy.load.Loader):
     }
 
     async def load_page(self, ident: int) -> lxml.html.HtmlElement:
+        logger.debug(f"Opening HTML: {ident}.")
         with open(TestLoader.d[ident]) as f:
-            return lxml.html.document_fromstring(f.read())
+            html = f.read()
+            logger.debug("Reading HTML.")
+            return lxml.html.document_fromstring(html)
 
 @pytest.fixture
 def loader() -> math_genealogy.load.Loader:
