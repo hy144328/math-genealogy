@@ -47,6 +47,7 @@ class WebLoader(Loader):    # pragma: no cover
             ),
         ),
         reraise = True,
+        before_sleep = tenacity.before_sleep_log(logger, logging.WARNING),
     )
     async def load_page(self, ident: int) -> lxml.html.HtmlElement:
         logger.debug(f"Load {ident}.")
