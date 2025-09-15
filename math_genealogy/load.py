@@ -14,3 +14,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
+
+import abc
+import urllib.parse
+
+import lxml.etree
+import lxml.html
+
+class Loader(abc.ABC):
+    @abc.abstractmethod
+    def load_page(self, ident: int) -> lxml.etree.ElementTree:  # pragma: no cover
+        raise NotImplementedError()
+
+class WebLoader(Loader):    # pragma: no cover
+    BASE_URL = urllib.parse.urlparse("https://genealogy.math.ndsu.nodak.edu/id.php")
+
+    def load_page(self, ident: int) -> lxml.etree.ElementTree:
+        query = urllib.parse.urlencode({"id": ident})
+        url = WebLoader.BASE_URL._replace(query=query)
+        return lxml.html.parse(urllib.parse.urlunparse(url))
