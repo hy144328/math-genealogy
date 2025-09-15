@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class Loader(abc.ABC):
     @abc.abstractmethod
-    async def load_page(self, ident: int) -> lxml.etree.Element:  # pragma: no cover
+    async def load_page(self, ident: int) -> lxml.etree.Element:    # pragma: no cover
         raise NotImplementedError()
 
 class WebLoader(Loader):    # pragma: no cover
