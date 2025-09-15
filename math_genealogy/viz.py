@@ -22,30 +22,29 @@ import math_genealogy.graph
 
 class Printer(abc.ABC):
     @abc.abstractmethod
-    def print(
+    def write(
         self,
         f: typing.TextIO,
         tree: math_genealogy.graph.Stammbaum,
-    ):
+    ):  # pragma: no cover
         raise NotImplementedError()
 
 class DotPrinter(Printer):
-    def print(
+    def write(
         self,
         f: typing.TextIO,
         tree: math_genealogy.graph.Stammbaum,
     ):
         f.write("digraph Stammbaum {\n")
-        f.write("rankdir = BT;\n")
-        f.write("node [shape=box, style=rounded];\n")
-        f.write("\n")
+        f.write("\trankdir = BT;\n")
+        f.write("\tnode [shape=box, style=rounded];\n")
 
+        f.write("\n")
         for node_it in tree.nodes:
-            f.write(f"{node_it} [\"{tree[node_it].name}\"];\n")
-        f.write("\n")
+            f.write(f"\t{node_it} [label=\"{tree[node_it].name}\"];\n")
 
-        for node_from, node_to in tree.edges:
-            f.write(f"{node_from} -> {node_to} [dir=back];\n")
         f.write("\n")
+        for node_from, node_to in tree.edges:
+            f.write(f"\t{node_from} -> {node_to} [dir=back];\n")
 
         f.write("}\n")
