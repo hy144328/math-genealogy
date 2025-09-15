@@ -17,9 +17,7 @@ examples/%.gv: examples/%.py
 
 .PHONY: clean
 clean:
-	-rm examples/*.eps
-	-rm examples/*.gv
-	-rm examples/*.png
+	$(MAKE) -C examples/ clean
 
 .PHONY: test
 test:
