@@ -18,6 +18,7 @@ math_genealogy_logger = logging.getLogger(math_genealogy.__name__)
 math_genealogy_logger.setLevel(logging.INFO)
 
 MAX_LEVEL = 3
+POOL_SIZE = 5
 ROOT_ID = 149678
 STUDENTS = [
     ("Simon Rees", 2009),
@@ -36,7 +37,7 @@ STUDENTS = [
 ]
 
 async def main():
-    async with aiohttp.TCPConnector(limit=5) as conn:
+    async with aiohttp.TCPConnector(limit_per_host=POOL_SIZE) as conn:
         async with aiohttp.ClientSession(connector=conn) as session:
             loader = math_genealogy.load.WebLoader(session)
             parser = math_genealogy.parse.Parser()
