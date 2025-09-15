@@ -41,7 +41,11 @@ async def main():
     client_timeout = aiohttp.ClientTimeout(TIMEOUT_SECONDS)
 
     async with aiohttp.TCPConnector(limit_per_host=POOL_SIZE) as conn:
-        async with aiohttp.ClientSession(connector=conn, timeout=client_timeout) as session:
+        async with aiohttp.ClientSession(
+            connector = conn,
+            raise_for_status = True,
+            timeout = client_timeout,
+        ) as session:
             loader = math_genealogy.load.WebLoader(session)
             parser = math_genealogy.parse.Parser()
             scraper = math_genealogy.scrape.Scraper(loader, parser)
