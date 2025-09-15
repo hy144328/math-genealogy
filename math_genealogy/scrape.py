@@ -74,8 +74,12 @@ class Scraper:
         max_level: int,
     ):
         while True:
-            logger.debug("Popping queue.")
-            ident_it, level_it, descendants = await q.get()
+            try:
+                logger.debug("Popping queue.")
+                ident_it, level_it, descendants = await q.get()
+            except asyncio.CancelledError as e:
+                logger.debug("Queue closed.")
+                raise e
 
             if level_it > max_level:
                 logger.debug(f"Skip {ident_it} because {level_it} > {max_level}.")
