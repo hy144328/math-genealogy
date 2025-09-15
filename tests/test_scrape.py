@@ -51,3 +51,17 @@ def test_scrape(
     assert 13700 in tree
     assert 65163 in tree
     assert 51374 not in tree
+
+def test_prune(
+    scraper: math_genealogy.scrape.Scraper,
+    tree: math_genealogy.graph.Stammbaum,
+):
+    scraper.scrape(tree, 149678, [], level=0, max_level=3)
+    scraper.prune(tree, max_level=2)
+
+    assert 149678 in tree
+    assert 116101 in tree
+    assert 94381 in tree
+    assert 13700 not in tree
+    assert 65163 not in tree
+    assert 51374 not in tree
