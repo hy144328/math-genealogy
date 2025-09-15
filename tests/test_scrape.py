@@ -1,11 +1,22 @@
+import asyncio
+import logging
+
 import lxml.etree
 import lxml.html
 import pytest
 
+import math_genealogy
 import math_genealogy.graph
 import math_genealogy.load
 import math_genealogy.parse
 import math_genealogy.scrape
+
+logging.basicConfig()
+math_genealogy_logger = logging.getLogger(math_genealogy.__name__)
+math_genealogy_logger.setLevel(logging.DEBUG)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class TestLoader(math_genealogy.load.Loader):
     d = {
@@ -17,9 +28,12 @@ class TestLoader(math_genealogy.load.Loader):
         149678: "tests/juniper.html",
     }
 
-    def load_page(self, ident: int) -> lxml.html.HtmlElement:
+    async def load_page(self, ident: int) -> lxml.html.HtmlElement:
+        logger.debug(f"Opening HTML: {ident}.")
         with open(TestLoader.d[ident]) as f:
-            return lxml.html.document_fromstring(f.read())
+            html = f.read()
+            logger.debug("Reading HTML.")
+            return lxml.html.document_fromstring(html)
 
 @pytest.fixture
 def loader() -> math_genealogy.load.Loader:
@@ -44,7 +58,7 @@ def test_scrape(
     scraper: math_genealogy.scrape.Scraper,
     tree: math_genealogy.graph.Stammbaum,
 ):
-    scraper.scrape(tree, 149678, [], level=0, max_level=3)
+    asyncio.run(scraper.scrape(tree, 149678, max_level=3))
 
     assert 149678 in tree
     assert 116101 in tree
@@ -57,7 +71,7 @@ def test_prune(
     scraper: math_genealogy.scrape.Scraper,
     tree: math_genealogy.graph.Stammbaum,
 ):
-    scraper.scrape(tree, 149678, [], level=0, max_level=3)
+    asyncio.run(scraper.scrape(tree, 149678, max_level=3))
     scraper.prune(tree, max_level=2)
 
     assert 149678 in tree

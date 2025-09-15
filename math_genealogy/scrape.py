@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
 
+import asyncio
 import logging
 import sys
 import typing
@@ -30,52 +31,90 @@ class Scraper:
         self,
         loader: math_genealogy.load.Loader,
         parser: math_genealogy.parse.Parser,
+        no_workers: int = 5,
     ):
         self.loader = loader
         self.parser = parser
+        self.no_workers = no_workers
 
-    def scrape(
+    async def scrape(
         self,
         tree: math_genealogy.graph.Stammbaum,
         root: int,
-        descendants: typing.Optional[typing.Sequence[int]] = None,
-        level: int = 0,
         max_level: int = sys.maxsize,
     ):
-        if level > max_level:
-            return
+        logger.debug("Start scraping.")
 
-        descendants = descendants or []
+        q: asyncio.LifoQueue[typing.Tuple[int, int, typing.Sequence[int]]] = asyncio.LifoQueue()
+        logger.debug("Initializing queue.")
+        await q.put((root, 0, []))
 
-        if root in tree:
-            logger.debug(f"Skip {root}.")
+        logger.debug("Creating tasks.")
+        tasks = [
+            asyncio.create_task(self._scrape_worker(tree, q, max_level))
+            for _ in range(self.no_workers)
+        ]
+
+        logger.debug("Joining tasks.")
+        await q.join()
+
+        logger.debug("Cancelling tasks.")
+        for task_it in tasks:
+            task_it.cancel()
+
+        logger.debug("Gathering tasks.")
+        await asyncio.gather(*tasks, return_exceptions=True)
+
+        logger.debug("Finish scraping.")
+
+    async def _scrape_worker(
+        self,
+        tree: math_genealogy.graph.Stammbaum,
+        q: asyncio.Queue[typing.Tuple[int, int, typing.Sequence[int]]],
+        max_level: int,
+    ):
+        while True:
+            try:
+                logger.debug("Popping queue.")
+                ident_it, level_it, descendants = await q.get()
+            except asyncio.CancelledError as e:
+                logger.debug("Queue closed.")
+                raise e
+
+            if level_it > max_level:
+                logger.debug(f"Skip {ident_it} because {level_it} > {max_level}.")
+                q.task_done()
+                continue
+
+            if ident_it in tree:
+                logger.debug(f"Skip {ident_it} because repeated.")
+
+                for descendant_it in descendants:
+                    logger.info(f"From {descendant_it} to {ident_it}.")
+                    tree.add_ancestors(descendant_it, [ident_it])
+
+                q.task_done()
+                continue
+
+            logger.info(f"Loading and parsing page: {ident_it}.")
+            page = await self.loader.load_page(ident_it)
+
+            name = self.parser.parse_name(page)
+            year = self.parser.parse_year(page)
+            ancestors = self.parser.parse_advisors(page)
+
+            node = math_genealogy.graph.StammbaumNode(ident_it, name=name, year=year)
+            tree.add(node)
 
             for descendant_it in descendants:
-                logger.info(f"From {descendant_it} to {root}.")
-                tree.add_ancestors(descendant_it, [root])
+                logger.info(f"From {descendant_it} to {ident_it}.")
+                tree.add_ancestors(descendant_it, [ident_it])
 
-            return
+            for ancestor_it in reversed(ancestors):
+                await q.put((ancestor_it, level_it + 1, [ident_it]))
 
-        page = self.loader.load_page(root)
-        name = self.parser.parse_name(page)
-        year = self.parser.parse_year(page)
-
-        node = math_genealogy.graph.StammbaumNode(root, name=name, year=year)
-        tree.add(node)
-
-        for descendant_it in descendants:
-            logger.info(f"From {descendant_it} to {root}.")
-            tree.add_ancestors(descendant_it, [root])
-
-        ancestors = self.parser.parse_advisors(page)
-        for ancestor_it in ancestors:
-            self.scrape(
-                tree,
-                ancestor_it,
-                [root],
-                level = level+1,
-                max_level = max_level,
-            )
+            logger.debug("Task done.")
+            q.task_done()
 
     def prune(
         self,
