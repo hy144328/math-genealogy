@@ -4,19 +4,16 @@ Search [Mathematics Genealogy Project](https://www.genealogy.math.ndsu.nodak.edu
 
 ## Requirements
 
-You need to have the following programs installed:
+You need the following programs:
 
 *   `dot`
-*   `pdflatex`
 
-On Ubuntu Linux, you can install the programs by executing the following commands:
+On Ubuntu, execute the following command to install the programs:
 
-    sudo apt-get install graphviz texlive
+    sudo apt-get install graphviz
 
 ## Instructions
 
-You need to prepare `foo.{py,tex}`:
+Run the following example:
 
-    make foo
-
-See `juniper` and `main` for example.
+    make juniper
