@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 
+import logging
 import os.path
 
+logging.basicConfig()
+
+import math_genealogy
 import math_genealogy.graph
 import math_genealogy.load
 import math_genealogy.parse
 import math_genealogy.scrape
 import math_genealogy.viz
+
+math_genealogy_logger = logging.getLogger(math_genealogy.__name__)
+math_genealogy_logger.setLevel(logging.DEBUG)
 
 ROOT_ID = 149678
 
