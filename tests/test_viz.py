@@ -1,3 +1,4 @@
+import asyncio
 import tempfile
 
 import pytest
@@ -30,7 +31,7 @@ def tree(
     scraper: math_genealogy.scrape.Scraper,
 ) -> math_genealogy.graph.Stammbaum:
     res = math_genealogy.graph.Stammbaum()
-    scraper.scrape(res, 149678, [], level=0, max_level=3)
+    asyncio.run(scraper.scrape(res, 149678, max_level=3))
     return res
 
 @pytest.fixture

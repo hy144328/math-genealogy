@@ -1,3 +1,5 @@
+import asyncio
+
 import lxml.etree
 import lxml.html
 import pytest
@@ -17,7 +19,7 @@ class TestLoader(math_genealogy.load.Loader):
         149678: "tests/juniper.html",
     }
 
-    def load_page(self, ident: int) -> lxml.html.HtmlElement:
+    async def load_page(self, ident: int) -> lxml.html.HtmlElement:
         with open(TestLoader.d[ident]) as f:
             return lxml.html.document_fromstring(f.read())
 
@@ -44,7 +46,7 @@ def test_scrape(
     scraper: math_genealogy.scrape.Scraper,
     tree: math_genealogy.graph.Stammbaum,
 ):
-    scraper.scrape(tree, 149678, [], level=0, max_level=3)
+    asyncio.run(scraper.scrape(tree, 149678, max_level=3))
 
     assert 149678 in tree
     assert 116101 in tree
@@ -57,7 +59,7 @@ def test_prune(
     scraper: math_genealogy.scrape.Scraper,
     tree: math_genealogy.graph.Stammbaum,
 ):
-    scraper.scrape(tree, 149678, [], level=0, max_level=3)
+    asyncio.run(scraper.scrape(tree, 149678, max_level=3))
     scraper.prune(tree, max_level=2)
 
     assert 149678 in tree
