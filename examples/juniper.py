@@ -18,7 +18,7 @@ math_genealogy_logger = logging.getLogger(math_genealogy.__name__)
 math_genealogy_logger.setLevel(logging.INFO)
 
 TIMEOUT_SECONDS = 30
-MAX_LEVEL = 3
+MAX_LEVEL = 20
 NO_WORKERS = 5
 POOL_SIZE = 5
 ROOT_ID = 149678
