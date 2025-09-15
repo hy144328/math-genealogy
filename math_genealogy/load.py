@@ -16,11 +16,13 @@
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
+import asyncio
 import logging
 
 import aiohttp
 import lxml.etree
 import lxml.html
+import tenacity
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +37,17 @@ class WebLoader(Loader):    # pragma: no cover
     def __init__(self, session: aiohttp.ClientSession):
         self.session = session
 
+    @tenacity.retry(
+        stop = tenacity.stop_after_attempt(10),
+        wait = tenacity.wait_exponential(max=30),
+        retry = tenacity.retry_if_exception_type(
+            exception_types = (
+                asyncio.TimeoutError,
+                aiohttp.ClientResponseError,
+            ),
+        ),
+        reraise = True,
+    )
     async def load_page(self, ident: int) -> lxml.html.HtmlElement:
         logger.debug(f"Load {ident}.")
         async with self.session.get(WebLoader.BASE_URL, params={"id": ident}) as resp:
