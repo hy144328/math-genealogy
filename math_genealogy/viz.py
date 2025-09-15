@@ -24,7 +24,7 @@ class Printer(abc.ABC):
     @abc.abstractmethod
     def write(
         self,
-        f: typing.TextIO,
+        f: typing.IO[str],
         tree: math_genealogy.graph.Stammbaum,
     ):  # pragma: no cover
         raise NotImplementedError()
@@ -32,7 +32,7 @@ class Printer(abc.ABC):
 class DotPrinter(Printer):
     def write(
         self,
-        f: typing.TextIO,
+        f: typing.IO[str],
         tree: math_genealogy.graph.Stammbaum,
     ):
         f.write("digraph Stammbaum {\n")

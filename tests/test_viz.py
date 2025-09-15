@@ -1,3 +1,5 @@
+import tempfile
+
 import pytest
 
 import math_genealogy.graph
@@ -39,5 +41,40 @@ def test_scrape(
     printer: math_genealogy.viz.Printer,
     tree: math_genealogy.graph.Stammbaum,
 ):
-    with open("tests/juniper.gv", "w") as f:
-        printer.write(f, tree)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".gv",
+            dir=temp_dir,
+            delete=False,
+        ) as temp_file:
+            printer.write(temp_file, tree)
+
+        with open(temp_file.name) as f:
+            lines = [
+                line_it.strip()
+                for line_it in f
+            ]
+
+        for node_it in [
+            "149678",
+            "116101",
+            "94381",
+            "13700",
+            "65163",
+        ]:
+            assert any(
+                line_it.startswith(f"{node_it}")
+                for line_it in lines
+            )
+
+        for node_from, node_to in [
+            (149678, 116101),
+            (116101, 94381),
+            (94381, 13700),
+            (94381, 65163),
+        ]:
+            assert any(
+                line_it.startswith(f"{node_from} -> {node_to}")
+                for line_it in lines
+            )
