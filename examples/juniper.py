@@ -15,7 +15,7 @@ import math_genealogy.viz
 
 logging.basicConfig()
 math_genealogy_logger = logging.getLogger(math_genealogy.__name__)
-math_genealogy_logger.setLevel(logging.DEBUG)
+math_genealogy_logger.setLevel(logging.INFO)
 
 MAX_LEVEL = 3
 ROOT_ID = 149678
@@ -36,7 +36,7 @@ STUDENTS = [
 ]
 
 async def main():
-    async with aiohttp.TCPConnector(limit=3) as conn:
+    async with aiohttp.TCPConnector(limit=5) as conn:
         async with aiohttp.ClientSession(connector=conn) as session:
             loader = math_genealogy.load.WebLoader(session)
             parser = math_genealogy.parse.Parser()

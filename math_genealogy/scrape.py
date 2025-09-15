@@ -31,9 +31,11 @@ class Scraper:
         self,
         loader: math_genealogy.load.Loader,
         parser: math_genealogy.parse.Parser,
+        no_workers: int = 5,
     ):
         self.loader = loader
         self.parser = parser
+        self.no_workers = no_workers
 
     async def scrape(
         self,
@@ -50,7 +52,7 @@ class Scraper:
         logger.debug("Creating tasks.")
         tasks = [
             asyncio.create_task(self._scrape_worker(tree, q, max_level))
-            for _ in range(5)
+            for _ in range(self.no_workers)
         ]
 
         logger.debug("Joining tasks.")
