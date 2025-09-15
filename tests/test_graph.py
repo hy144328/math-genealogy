@@ -54,4 +54,3 @@ def test_stammbaum(
     assert (0, 1) in tree.edges
     assert (0, 2) not in tree.edges
     assert (1, 2) not in tree.edges
-    assert (0, 1) in tree.edges
