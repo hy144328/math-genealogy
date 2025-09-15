@@ -29,7 +29,7 @@ class Parser:
     RE_YEAR = re.compile(r"[^0-9]([0-9]{4})$")
 
     @staticmethod
-    def parse_name(page: lxml.etree.ElementTree) -> str:
+    def parse_name(page: lxml.etree.Element) -> str:
         e = page.find(".//h2")
 
         if e is None:   # pragma: no cover
@@ -39,7 +39,7 @@ class Parser:
         return e.text.strip()
 
     @staticmethod
-    def parse_year(page: lxml.etree.ElementTree) -> typing.Optional[int]:
+    def parse_year(page: lxml.etree.Element) -> typing.Optional[int]:
         year = None
 
         spans = page.findall(".//span")
@@ -63,7 +63,7 @@ class Parser:
         return year
 
     @staticmethod
-    def parse_advisors(page: lxml.etree.ElementTree) -> typing.List[int]:
+    def parse_advisors(page: lxml.etree.Element) -> typing.List[int]:
         res: typing.List[int] = []
 
         ps = page.findall(".//p")
