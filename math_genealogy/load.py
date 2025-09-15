@@ -16,10 +16,13 @@
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
+import logging
 
 import lxml.etree
 import lxml.html
 import requests
+
+logger = logging.getLogger(__name__)
 
 class Loader(abc.ABC):
     @abc.abstractmethod
@@ -30,5 +33,8 @@ class WebLoader(Loader):    # pragma: no cover
     BASE_URL = "https://genealogy.math.ndsu.nodak.edu/id.php"
 
     def load_page(self, ident: int) -> lxml.html.HtmlElement:
+        logger.debug(f"Load {ident}.")
         resp = requests.get(WebLoader.BASE_URL, params={"id": ident})
+        logger.debug(f"Loaded {ident}.")
+
         return lxml.html.document_fromstring(resp.text)
