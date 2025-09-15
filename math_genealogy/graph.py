@@ -78,5 +78,9 @@ class Stammbaum:
     def nodes(self) -> typing.List[int]:
         return list(self.g.nodes)
 
+    @property
+    def edges(self) -> typing.List[typing.Tuple[int, int]]:
+        return list(self.g.edges)
+
     def remove(self, ident: int):
         self.g.remove_node(ident)
