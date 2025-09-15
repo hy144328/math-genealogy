@@ -4,7 +4,7 @@ MAKE = make
 PYTHON = python3
 
 .PHONY: juniper
-juniper: examples/juniper.eps examples/juniper.png
+juniper: examples/juniper.gv examples/juniper.eps examples/juniper.png
 
 examples/%.eps: examples/%.gv
 	$(DOT) -Teps $< > $@

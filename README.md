@@ -22,4 +22,4 @@ Run the following example:
 
 It generates the following image:
 
-![Matthew Juniper's mathematical genealogy.](examples/juniper.jpeg)
+![Matthew Juniper's mathematical genealogy.](juniper.png)
