@@ -124,6 +124,7 @@ class Scraper:
 
         for node_it, height_it in heights.items():
             if height_it > max_level:
+                logger.debug(f"Remove {node_it} of height {height_it}.")
                 tree.remove(node_it)
 
     def _calculate_heights(
