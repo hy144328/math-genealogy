@@ -19,3 +19,7 @@ On Ubuntu, execute the following command to install the programs:
 Run the following example:
 
     make juniper
+
+It generates the following image:
+
+![Matthew Juniper's mathematical genealogy.](examples/juniper.jpeg)
