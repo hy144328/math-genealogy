@@ -70,3 +70,13 @@ class Stammbaum:
 
     def get_ancestors(self, ident: int) -> typing.List[int]:
         return list(self.g.successors(ident))
+
+    def get_descendants(self, ident: int) -> typing.List[int]:
+        return list(self.g.predecessors(ident))
+
+    @property
+    def nodes(self) -> typing.List[int]:
+        return list(self.g.nodes)
+
+    def remove(self, ident: int):
+        self.g.remove_node(ident)

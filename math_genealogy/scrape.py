@@ -76,3 +76,48 @@ class Scraper:
                 level = level+1,
                 max_level = max_level,
             )
+
+    def prune(
+        self,
+        tree: math_genealogy.graph.Stammbaum,
+        max_level: int,
+    ):
+        heights = self._calculate_heights(tree)
+
+        for node_it, height_it in heights.items():
+            if height_it > max_level:
+                tree.remove(node_it)
+
+    def _calculate_heights(
+        self,
+        tree: math_genealogy.graph.Stammbaum,
+    ) -> typing.Dict[int, int]:
+        res = {}
+
+        for node_it in tree.nodes:
+            self._calculate_heights_rec(tree, node_it, res)
+
+        return res
+
+    def _calculate_heights_rec(
+        self,
+        tree: math_genealogy.graph.Stammbaum,
+        root: int,
+        acc: typing.MutableMapping[int, int],
+    ):
+        if root in acc:
+            return
+
+        descendants = tree.get_descendants(root)
+
+        for descendant_it in descendants:
+            self._calculate_heights_rec(
+                tree,
+                descendant_it,
+                acc,
+            )
+
+        acc[root] = max(
+            (acc[descendant_it] for descendant_it in descendants),
+            default = -1,
+        ) + 1
