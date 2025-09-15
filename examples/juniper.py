@@ -19,6 +19,7 @@ math_genealogy_logger.setLevel(logging.INFO)
 
 TIMEOUT_SECONDS = 30
 MAX_LEVEL = 3
+NO_WORKERS = 5
 POOL_SIZE = 5
 ROOT_ID = 149678
 STUDENTS = [
@@ -48,7 +49,7 @@ async def main():
         ) as session:
             loader = math_genealogy.load.WebLoader(session)
             parser = math_genealogy.parse.Parser()
-            scraper = math_genealogy.scrape.Scraper(loader, parser)
+            scraper = math_genealogy.scrape.Scraper(loader, parser, no_workers=NO_WORKERS)
             printer = math_genealogy.viz.DotPrinter()
 
             tree = math_genealogy.graph.Stammbaum()
