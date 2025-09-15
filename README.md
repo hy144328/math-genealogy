@@ -1,29 +1,25 @@
-MathDjinn
-=========
-
-Copyright (C) 2016  Hans Yu [hans.yu@outlook.de](mailto:hans.yu@outlook.de)
+# MathDjinn
 
 Search [Mathematics Genealogy Project](https://www.genealogy.math.ndsu.nodak.edu/) database, and visualize graph.
 
-Requirements
-------------
+Support via [donations](https://northdakotastate-ndus.nbsstore.net/mathematics-genealogy-project-donation) and [poster orders](https://www.mathgenealogy.org/posters.php).
 
-You need to have the following programs installed:
+## Requirements
 
-*   `python`
+You need the following programs:
+
 *   `dot`
-*   `pdflatex`
-*   `pandoc` (for documentation)
 
-On Ubuntu Linux, you can install the programs by executing the following commands:
+On Ubuntu, execute the following command to install the programs:
 
-    sudo apt-get install python graphviz texlive pandoc
+    sudo apt-get install graphviz
 
-Instructions
-------------
+## Instructions
 
-You need to prepare `foo.{py,tex}`:
+Run the following example:
 
-    make foo
+    make juniper
 
-See `juniper` and `main` for example.
+It generates the following image:
+
+![Matthew Juniper's mathematical genealogy.](examples/juniper.jpeg)

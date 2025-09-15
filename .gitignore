@@ -1,14 +1,2 @@
-README.pdf
-
-*.eps
-*.gv
-*.png
-
-*.aux
-*.log
-*.out
-*.pdf
-*.pyc
-*.synctex.gz
-
 .coverage
+__pycache__/

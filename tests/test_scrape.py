@@ -17,8 +17,9 @@ class TestLoader(math_genealogy.load.Loader):
         149678: "tests/juniper.html",
     }
 
-    def load_page(self, ident: int) -> lxml.etree.ElementTree:
-        return lxml.html.parse(TestLoader.d[ident])
+    def load_page(self, ident: int) -> lxml.html.HtmlElement:
+        with open(TestLoader.d[ident]) as f:
+            return lxml.html.document_fromstring(f.read())
 
 @pytest.fixture
 def loader() -> math_genealogy.load.Loader:

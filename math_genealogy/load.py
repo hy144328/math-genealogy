@@ -16,20 +16,25 @@
 # along with MathDjinn.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
-import urllib.parse
+import logging
 
 import lxml.etree
 import lxml.html
+import requests
+
+logger = logging.getLogger(__name__)
 
 class Loader(abc.ABC):
     @abc.abstractmethod
-    def load_page(self, ident: int) -> lxml.etree.ElementTree:  # pragma: no cover
+    def load_page(self, ident: int) -> lxml.etree.Element:  # pragma: no cover
         raise NotImplementedError()
 
 class WebLoader(Loader):    # pragma: no cover
-    BASE_URL = urllib.parse.urlparse("https://genealogy.math.ndsu.nodak.edu/id.php")
+    BASE_URL = "https://genealogy.math.ndsu.nodak.edu/id.php"
 
-    def load_page(self, ident: int) -> lxml.etree.ElementTree:
-        query = urllib.parse.urlencode({"id": ident})
-        url = WebLoader.BASE_URL._replace(query=query)
-        return lxml.html.parse(urllib.parse.urlunparse(url))
+    def load_page(self, ident: int) -> lxml.html.HtmlElement:
+        logger.debug(f"Load {ident}.")
+        resp = requests.get(WebLoader.BASE_URL, params={"id": ident})
+        logger.debug(f"Loaded {ident}.")
+
+        return lxml.html.document_fromstring(resp.text)
