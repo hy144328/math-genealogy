@@ -18,23 +18,27 @@
 import abc
 import logging
 
+import aiohttp
 import lxml.etree
 import lxml.html
-import requests
 
 logger = logging.getLogger(__name__)
 
 class Loader(abc.ABC):
     @abc.abstractmethod
-    def load_page(self, ident: int) -> lxml.etree.Element:  # pragma: no cover
+    async def load_page(self, ident: int) -> lxml.etree.Element:  # pragma: no cover
         raise NotImplementedError()
 
 class WebLoader(Loader):    # pragma: no cover
     BASE_URL = "https://genealogy.math.ndsu.nodak.edu/id.php"
 
-    def load_page(self, ident: int) -> lxml.html.HtmlElement:
-        logger.debug(f"Load {ident}.")
-        resp = requests.get(WebLoader.BASE_URL, params={"id": ident})
-        logger.debug(f"Loaded {ident}.")
+    def __init__(self, session: aiohttp.ClientSession):
+        self.session = session
 
-        return lxml.html.document_fromstring(resp.text)
+    async def load_page(self, ident: int) -> lxml.html.HtmlElement:
+        logger.debug(f"Load {ident}.")
+        async with self.session.get(WebLoader.BASE_URL, params={"id": ident}) as resp:
+            html = await resp.text()
+            logger.debug(f"Loaded {ident}.")
+
+        return lxml.html.document_fromstring(html)
